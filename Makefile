@@ -25,6 +25,9 @@ devrel: $(FILE)
 	mkdir -p presto-server-0.62/plugin/riak
 	sh build_devrel.sh presto-server-0.62 1
 	sh build_devrel.sh presto-server-0.62 2
+	sh build_devrel.sh presto-server-0.62 3
+	sh build_devrel.sh presto-server-0.62 4
+	sh build_devrel.sh presto-server-0.62 5
 
 presto-cli: presto-cli-0.61-executable.jar
 	mv $< $@
