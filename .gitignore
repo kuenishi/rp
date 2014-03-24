@@ -4,3 +4,5 @@ README.txt
 bin
 lib
 plugin
+presto-cli
+*.gz

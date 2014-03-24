@@ -1,4 +1,4 @@
-.PHONY: env tarball cli
+.PHONY: env tarball cli devrel
 
 all: env
 
@@ -18,6 +18,14 @@ $(FILE): presto
 presto-cli-0.61-executable.jar:
 	wget http://central.maven.org/maven2/com/facebook/presto/presto-cli/0.61/presto-cli-0.61-executable.jar
 
+devrel: $(FILE)
+	tar xzf $<
+	rm -rf dev
+	mkdir dev
+	mkdir -p presto-server-0.62/plugin/riak
+	sh build_devrel.sh presto-server-0.62 1
+	sh build_devrel.sh presto-server-0.62 2
+
 presto-cli: presto-cli-0.61-executable.jar
 	mv $< $@
 	chmod 755 $@
@@ -28,7 +36,6 @@ env: $(FILE)
 	tar xzf $<
 	mkdir -p data
 	mv presto-server-0.62/* .
-
 
 clean:
 	rm -rf bin lib plugin data NOTICE README.txt
