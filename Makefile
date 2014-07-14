@@ -2,17 +2,17 @@
 
 all: env cli
 
-FILE=presto/presto-server/target/presto-server-0.72.tar.gz
+FILE=presto/presto-server/target/presto-server-0.73.tar.gz
 #FILE=presto-server-0.62.tar.gz
 
-CLIJAR=presto/presto-cli/target/presto-cli-0.72-executable.jar
+CLIJAR=presto/presto-cli/target/presto-cli-0.73-executable.jar
 
 #$(FILE):
 #	wget http://central.maven.org/maven2/com/facebook/presto/presto-server/0.61/presto-server-0.61.tar.gz
 
 presto:
 	git clone git://github.com/facebook/presto.git
-	cd presto && git checkout 0.72
+	cd presto && git checkout 0.73
 
 $(FILE): presto
 	cd presto/presto-server &&  mvn package assembly:assembly -DdescriptorId=bin -Dtest=skip -DfailIfNoTests=false
@@ -24,12 +24,12 @@ devrel: $(FILE)
 	tar xzf $<
 	rm -rf dev
 	mkdir dev
-	mkdir -p presto-server-0.72/plugin/riak
-	sh build_devrel.sh presto-server-0.72 1
-	sh build_devrel.sh presto-server-0.72 2
-	sh build_devrel.sh presto-server-0.72 3
-	sh build_devrel.sh presto-server-0.72 4
-	sh build_devrel.sh presto-server-0.72 5
+	mkdir -p presto-server-0.73/plugin/riak
+	sh build_devrel.sh presto-server-0.73 1
+	sh build_devrel.sh presto-server-0.73 2
+	sh build_devrel.sh presto-server-0.73 3
+	sh build_devrel.sh presto-server-0.73 4
+	sh build_devrel.sh presto-server-0.73 5
 
 presto-cli: $(CLIJAR)
 	cp $< $@
@@ -41,7 +41,7 @@ cli: presto-cli
 env: $(FILE)
 	tar xzf $<
 	mkdir -p data
-	mv presto-server-0.72/* .
+	mv presto-server-0.73/* .
 	mkdir plugin/presto-riak
 
 clean:
