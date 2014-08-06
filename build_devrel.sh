@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 PRESTO_DIR=$1
 NODE=$2
 PORT=2008$NODE
@@ -8,11 +10,11 @@ echo $PRESTO_DIR
 echo $NODE
 echo $PORT
 
-cp -r presto-server-0.62 dev/dev$NODE
+cp -r $PRESTO_DIR dev/dev$NODE
 mkdir dev/dev$NODE/data
 rm -rf dev/dev$NODE/lib dev/dev$NODE/plugin
-ln -s ../../presto-server-0.62/lib dev/dev$NODE/lib
-ln -s ../../presto-server-0.62/plugin dev/dev$NODE/plugin
+ln -s ../../$PRESTO_DIR/lib dev/dev$NODE/lib
+ln -s ../../$PRESTO_DIR/plugin dev/dev$NODE/plugin
 cp -r etc dev/dev$NODE/
 
 UUID=`uuidgen`
@@ -33,3 +35,5 @@ sed -e "s/localhost:8080/localhost:20081/" -i.back dev/dev$NODE/etc/config.prope
 
 RIAKPORT=100${NODE}7
 sed -e "s/localhost:8087/localhost:$RIAKPORT/" -i.back dev/dev$NODE/etc/catalog/riak.properties
+sed -e "s/riak@/dev$NODE@/" -i.back dev/dev$NODE/etc/catalog/riak.properties
+sed -e "s/presto@/presto$NODE@/" -i.back dev/dev$NODE/etc/catalog/riak.properties

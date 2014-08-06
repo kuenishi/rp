@@ -1,4 +1,4 @@
-.PHONY: env tarball cli devrel
+.PHONY: env tarball cli devrel riak-release latest-presto riak-devrel presto-devrel
 
 all: env cli latest-presto riak-release
 
@@ -22,11 +22,13 @@ $(FILE): latest-presto
 $(CLIJAR): presto
 	@cd presto/presto-cli &&  mvn package assembly:assembly -DdescriptorId=bin -Dtest=skip -DfailIfNoTests=false
 
-devrel: $(FILE)
-	tar xzf $<
+devrel:  presto-devrel riak-devrel
+
+presto-devrel: $(FILE) dev
+	tar xzf $(FILE)	
 	rm -rf dev
 	mkdir dev
-	mkdir -p presto-server-0.74/plugin/riak
+	mkdir -p presto-server-0.74/plugin/presto-riak
 	sh build_devrel.sh presto-server-0.74 1
 	sh build_devrel.sh presto-server-0.74 2
 	sh build_devrel.sh presto-server-0.74 3
@@ -58,3 +60,8 @@ riak:
 riak-release: riak
 	cd riak && (git pull && ./rebar update-deps)
 	cd riak && make stage
+
+riak-devrel: riak
+	cd riak && (git pull && ./rebar update-deps)
+	cd riak && make stagedevrel
+	sed -e "s/storage_backend = bitcask/storage_backend = leveldb/" -i.back riak/dev/dev$NODE/etc/riak.conf
