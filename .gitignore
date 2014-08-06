@@ -6,3 +6,7 @@ lib
 plugin
 presto-cli
 *.gz
+presto
+riak
+target
+.idea

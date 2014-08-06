@@ -1,6 +1,6 @@
 .PHONY: env tarball cli devrel
 
-all: env cli latest-presto
+all: env cli latest-presto riak-release
 
 FILE=presto/presto-server/target/presto-server-0.74.tar.gz
 #FILE=presto-server-0.62.tar.gz
@@ -48,3 +48,11 @@ env: $(FILE)
 
 clean:
 	rm -rf bin lib plugin data NOTICE README.txt
+
+
+riak:
+	git clone git://github.com/basho/riak
+
+riak-release: riak
+	cd riak && (git pull && ./rebar update-deps)
+	cd riak && make stage
