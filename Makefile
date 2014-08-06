@@ -49,6 +49,8 @@ env: $(FILE)
 clean:
 	rm -rf bin lib plugin data NOTICE README.txt
 
+test:
+	mvn -Dmaven.junit.usefile=false test 
 
 riak:
 	git clone git://github.com/basho/riak
