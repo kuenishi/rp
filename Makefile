@@ -2,10 +2,9 @@
 
 all: env cli latest-presto riak-release
 
-FILE=presto/presto-server/target/presto-server-0.74.tar.gz
-#FILE=presto-server-0.62.tar.gz
+FILE=presto/presto-server/target/presto-server-0.77.tar.gz
 
-CLIJAR=presto/presto-cli/target/presto-cli-0.74-executable.jar
+CLIJAR=presto/presto-cli/target/presto-cli-0.77-executable.jar
 
 #$(FILE):
 #	wget http://central.maven.org/maven2/com/facebook/presto/presto-server/0.61/presto-server-0.61.tar.gz
@@ -14,7 +13,7 @@ presto:
 	git clone git://github.com/facebook/presto.git
 
 latest-presto: presto
-	@cd presto && git fetch && git checkout 0.74
+	@cd presto && git fetch && git checkout 0.77
 
 $(FILE): latest-presto
 	@cd presto/presto-server &&  mvn package assembly:assembly -DdescriptorId=bin -Dtest=skip -DfailIfNoTests=false
@@ -28,12 +27,12 @@ presto-devrel: $(FILE) dev
 	tar xzf $(FILE)	
 	rm -rf dev
 	mkdir dev
-	mkdir -p presto-server-0.74/plugin/presto-riak
-	sh build_devrel.sh presto-server-0.74 1
-	sh build_devrel.sh presto-server-0.74 2
-	sh build_devrel.sh presto-server-0.74 3
-	sh build_devrel.sh presto-server-0.74 4
-	sh build_devrel.sh presto-server-0.74 5
+	mkdir -p presto-server-0.77/plugin/presto-riak
+	sh build_devrel.sh presto-server-0.77 1
+	sh build_devrel.sh presto-server-0.77 2
+	sh build_devrel.sh presto-server-0.77 3
+	sh build_devrel.sh presto-server-0.77 4
+	sh build_devrel.sh presto-server-0.77 5
 
 presto-cli: $(CLIJAR)
 	cp $< $@
@@ -45,7 +44,7 @@ cli: presto-cli
 env: $(FILE)
 	tar xzf $<
 	mkdir -p data
-	mv presto-server-0.74/* .
+	mv presto-server-0.77/* .
 	mkdir plugin/presto-riak
 
 clean:
@@ -55,7 +54,7 @@ test:
 	mvn -Dmaven.junit.usefile=false test 
 
 riak:
-	git clone git://github.com/basho/riak
+	git clone git://github.com/basho/riak -b 2.0
 
 riak-release: riak
 	cd riak && (git pull && ./rebar update-deps)
