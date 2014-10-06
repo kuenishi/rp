@@ -5,6 +5,7 @@ all: env cli latest-presto riak-release
 FILE=presto/presto-server/target/presto-server-0.77.tar.gz
 
 CLIJAR=presto/presto-cli/target/presto-cli-0.77-executable.jar
+VERIFIER=presto/presto-verifier/target/presto-verifier-0.77-executable.jar
 
 #$(FILE):
 #	wget http://central.maven.org/maven2/com/facebook/presto/presto-server/0.61/presto-server-0.61.tar.gz
@@ -21,6 +22,9 @@ $(FILE): latest-presto
 $(CLIJAR): presto
 	@cd presto/presto-cli &&  mvn package assembly:assembly -DdescriptorId=bin -Dtest=skip -DfailIfNoTests=false
 
+$(VERIFIER): presto
+	@cd presto/presto-verifier &&  mvn package assembly:assembly -DdescriptorId=bin -Dtest=skip -DfailIfNoTests=false
+
 devrel:  presto-devrel riak-devrel
 
 presto-devrel: $(FILE) dev
@@ -34,12 +38,17 @@ presto-devrel: $(FILE) dev
 	sh build_devrel.sh presto-server-0.77 4
 	sh build_devrel.sh presto-server-0.77 5
 
+presto-verifier: $(VERIFIER)
+	cp $< $@
+	chmod 755 $@
+	mv $@ bin/
+
 presto-cli: $(CLIJAR)
 	cp $< $@
 	chmod 755 $@
 	mv $@ bin/
 
-cli: presto-cli
+cli: presto-cli presto-verifier
 
 env: $(FILE)
 	tar xzf $<
@@ -59,6 +68,7 @@ riak:
 riak-release: riak
 	cd riak && (git pull && ./rebar update-deps)
 	cd riak && make stage
+	sed -e "s/storage_backend = bitcask/storage_backend = leveldb/" -i.back riak/rel/riak/etc/riak.conf
 
 riak-devrel: riak
 	cd riak && (git pull && ./rebar update-deps)
