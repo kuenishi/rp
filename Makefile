@@ -2,10 +2,11 @@
 
 all: env cli latest-presto riak-release
 
-FILE=presto/presto-server/target/presto-server-0.78.tar.gz
+PRESTO_VERSION=0.79
+FILE=presto/presto-server/target/presto-server-$(PRESTO_VERSION).tar.gz
 
-CLIJAR=presto/presto-cli/target/presto-cli-0.78-executable.jar
-VERIFIER=presto/presto-verifier/target/presto-verifier-0.78-executable.jar
+CLIJAR=presto/presto-cli/target/presto-cli-$(PRESTO_VERSION)-executable.jar
+VERIFIER=presto/presto-verifier/target/presto-verifier-$(PRESTO_VERSION)-executable.jar
 
 #$(FILE):
 #	wget http://central.maven.org/maven2/com/facebook/presto/presto-server/0.61/presto-server-0.61.tar.gz
@@ -15,7 +16,7 @@ presto:
 	git clone git://github.com/facebook/presto.git
 
 latest-presto: presto
-	@cd presto && git fetch && git checkout 0.78
+	@cd presto && git fetch && git checkout $(PRESTO_VERSION)
 
 $(FILE): latest-presto
 	@cd presto/presto-server &&  mvn package assembly:assembly -DdescriptorId=bin -Dtest=skip -DfailIfNoTests=false
@@ -32,12 +33,12 @@ presto-devrel: $(FILE) dev
 	tar xzf $(FILE)	
 	rm -rf dev
 	mkdir dev
-	mkdir -p presto-server-0.78/plugin/presto-riak
-	sh build_devrel.sh presto-server-0.78 1
-	sh build_devrel.sh presto-server-0.78 2
-	sh build_devrel.sh presto-server-0.78 3
-	sh build_devrel.sh presto-server-0.78 4
-	sh build_devrel.sh presto-server-0.78 5
+	mkdir -p presto-server-$(PRESTO_VERSION)/plugin/presto-riak
+	sh build_devrel.sh presto-server-$(PRESTO_VERSION) 1
+	sh build_devrel.sh presto-server-$(PRESTO_VERSION) 2
+	sh build_devrel.sh presto-server-$(PRESTO_VERSION) 3
+	sh build_devrel.sh presto-server-$(PRESTO_VERSION) 4
+	sh build_devrel.sh presto-server-$(PRESTO_VERSION) 5
 
 presto-verifier: $(VERIFIER)
 	cp $< $@
@@ -55,7 +56,7 @@ env: $(FILE)
 	tar xzf $<
 	mkdir -p data
 	rm -rf bin lib
-	mv presto-server-0.78/* .
+	mv presto-server-$(PRESTO_VERSION)/* .
 	mkdir plugin/presto-riak
 
 clean:
