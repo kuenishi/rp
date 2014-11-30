@@ -70,10 +70,12 @@ riak:
 
 riak-release: riak
 	cd riak && (git pull && ./rebar update-deps)
+	cd riak && make clean
 	cd riak && make stage
 	sed -e "s/storage_backend = bitcask/storage_backend = leveldb/" -i.back riak/rel/riak/etc/riak.conf
 
 riak-devrel: riak
 	cd riak && (git pull && ./rebar update-deps)
+	cd riak && make clean
 	cd riak && make stagedevrel
 	sed -e "s/storage_backend = bitcask/storage_backend = leveldb/" -i.back riak/dev/dev$NODE/etc/riak.conf
