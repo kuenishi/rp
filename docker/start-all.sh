@@ -19,5 +19,4 @@ riak-admin bucket-type activate t
 riak-admin bucket-type list
 
 echo "/opt/presto-server/bin/presto-cli --catalog riak --schema t"
-
-/opt/presto-server/bin/presto-cli --schema t --catalog riak --execute 'select * from logs;'
+grep ring_size /etc/riak/riak.conf

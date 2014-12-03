@@ -18,8 +18,10 @@ RUN apt-get update
 RUN apt-get install -qq openjdk-7-jre
 RUN apt-get install -qq  riak
 
-RUN sed -e 's/search = off/search = on/' -i.back /etc/riak/riak.conf
+## as we don't need Search for now
+## RUN sed -e 's/search = off/search = on/' -i.back /etc/riak/riak.conf
 RUN sed -e 's/storage_backend = bitcask/storage_backend = leveldb/' -i.back /etc/riak/riak.conf
+RUN sed -e 's/## ring_size = 64/ring_size = 8/' -i.back /etc/riak/riak.conf
 COPY ./ldna.beam /usr/lib/riak/lib/basho-patches/ldna.beam
 
 RUN ls /sys/block/
@@ -40,3 +42,5 @@ COPY ./presto-cli-0.85-executable.jar /opt/presto-server/bin/presto-cli
 
 RUN mkdir -p /opt/presto-server/etc/
 COPY ./etc/config.properties /opt/presto-server/etc/config.properties
+
+RUN /opt/presto-server/bin/presto-cli --help
