@@ -29,8 +29,8 @@ $(VERIFIER): presto
 
 devrel:  presto-devrel riak-devrel
 
-presto-devrel: $(FILE) dev
-	tar xzf $(FILE)	
+presto-devrel: $(FILE) riak-devrel
+	tar xzf $(FILE)
 	rm -rf dev
 	mkdir dev
 	mkdir -p presto-server-$(PRESTO_VERSION)/plugin/presto-riak
@@ -55,12 +55,14 @@ cli: presto-cli presto-verifier
 env: $(FILE)
 	tar xzf $<
 	mkdir -p data
-	rm -rf bin lib
-	mv presto-server-$(PRESTO_VERSION)/* .
+	rm -rf lib
+	mv presto-server-$(PRESTO_VERSION)/lib .
+	mv presto-server-$(PRESTO_VERSION)/bin/* ./bin/
+	mv presto-server-$(PRESTO_VERSION)/plugin .
 	mkdir plugin/presto-riak
 
 clean:
-	rm -rf bin lib plugin data NOTICE README.txt
+	rm -rf lib plugin data NOTICE README.txt
 
 test:
 	mvn -Dmaven.junit.usefile=false test 
@@ -68,14 +70,15 @@ test:
 riak:
 	git clone git://github.com/basho/riak -b 2.0
 
-riak-release: riak
-	cd riak && (git pull && ./rebar update-deps)
+riak-release: riak/rel/riak
+
+riak/rel/riak: riak
 	cd riak && make clean
 	cd riak && make stage
 	sed -e "s/storage_backend = bitcask/storage_backend = leveldb/" -i.back riak/rel/riak/etc/riak.conf
 
-riak-devrel: riak
-	cd riak && (git pull && ./rebar update-deps)
-	cd riak && make clean
+riak-devrel: riak/dev/dev1
+
+riak/dev/dev1: riak
 	cd riak && make stagedevrel
-	sed -e "s/storage_backend = bitcask/storage_backend = leveldb/" -i.back riak/dev/dev$NODE/etc/riak.conf
+	for NODE in '1 2 3 4'; do sed -e "s/storage_backend = bitcask/storage_backend = leveldb/" -i.back riak/dev/dev${NODE}/etc/riak.conf; done
