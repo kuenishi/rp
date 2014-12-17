@@ -2,7 +2,7 @@
 
 all: env cli latest-presto riak-release
 
-PRESTO_VERSION=0.87
+PRESTO_VERSION=0.88
 FILE=presto/presto-server/target/presto-server-$(PRESTO_VERSION).tar.gz
 
 CLIJAR=presto/presto-cli/target/presto-cli-$(PRESTO_VERSION)-executable.jar
