@@ -30,6 +30,9 @@ COPY ./presto-cli-0.89-executable.jar /opt/presto-server/bin/presto-cli
 
 RUN mkdir -p /opt/presto-server/etc/catalog
 COPY ./config.properties /opt/presto-server/etc/config.properties
+COPY ./jvm.config /opt/presto-server/etc/jvm.config
+COPY ./log.properties /opt/presto-server/etc/log.properties
+COPY ./node.properties /opt/presto-server/etc/node.properties
 COPY ./postgresql.properties /opt/presto-server/etc/catalog/postgresql.properties
 
 RUN chmod 755 /opt/presto-server/bin/presto-cli
@@ -40,10 +43,11 @@ RUN /opt/presto-server/bin/presto-cli --help
 RUN mkdir -p /opt/data
 RUN chown postgres:postgres /opt/data
 RUN sudo -u postgres /usr/lib/postgresql/9.3/bin/initdb /opt/data
-RUN sudo -u postgres /usr/lib/postgresql/9.3/bin/postgres -i -h localhost -p 5432 -D /opt/data &
+
+# run these commands inside some other scripts
+## RUN sudo -u postgres /usr/lib/postgresql/9.3/bin/postgres -i -h localhost -p 5432 -D /opt/data &
 ## RUN sudo -u postgres /usr/lib/postgresql/9.3/bin/pg_ctl start -o "-i -h localhost -p 5432" -D /opt/data
-## RUN sudo -u postgres createdb testdb
-## RUN sleep 10
+## RUN sleep 3
 ## RUN echo "create table a (x int);" | sudo -u postgres psql
 ## RUN echo "\d" | sudo -u postgres psql
 
