@@ -2,7 +2,7 @@
 
 all: env cli latest-presto riak-release
 
-PRESTO_VERSION=0.88
+PRESTO_VERSION=0.92
 FILE=presto/presto-server/target/presto-server-$(PRESTO_VERSION).tar.gz
 
 CLIJAR=presto/presto-cli/target/presto-cli-$(PRESTO_VERSION)-executable.jar
@@ -56,9 +56,9 @@ env: $(FILE)
 	tar xzf $<
 	mkdir -p data
 	rm -rf lib
-	mv presto-server-$(PRESTO_VERSION)/lib .
-	mv presto-server-$(PRESTO_VERSION)/bin/* ./bin/
-	mv presto-server-$(PRESTO_VERSION)/plugin .
+	cp -r presto-server-$(PRESTO_VERSION)/lib .
+	cp -r presto-server-$(PRESTO_VERSION)/bin/* ./bin/
+	cp -r presto-server-$(PRESTO_VERSION)/plugin .
 	mkdir plugin/presto-riak
 
 clean:
