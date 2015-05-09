@@ -2,7 +2,7 @@
 
 all: env cli latest-presto riak-release
 
-PRESTO_VERSION=0.100
+PRESTO_VERSION=0.102
 FILE=presto/presto-server/target/presto-server-$(PRESTO_VERSION).tar.gz
 
 CLIJAR=presto/presto-cli/target/presto-cli-$(PRESTO_VERSION)-executable.jar
@@ -68,7 +68,7 @@ test:
 	mvn -Dmaven.junit.usefile=false test 
 
 riak:
-	git clone git://github.com/basho/riak -b 2.0
+	git clone git://github.com/basho/riak -b 2.1.1
 
 riak-release: riak/rel/riak
 
